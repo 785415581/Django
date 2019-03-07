@@ -1,0 +1,162 @@
+{% extends 'layout.html' %}
+
+
+{% block css %}
+    <style>
+        .wrap {
+            display: -webkit-box;
+        }
+
+        .left,
+        .right {
+            padding: 10px;
+        }
+    </style>
+
+
+{% endblock %}
+
+{% block tabel %}
+    <div style="width: 300px;margin: 0 auto;margin-top: 100px">
+    <h1>教师姓名</h1>
+    <div>
+        <div style="margin: 10px 0;width: 350px;">
+            <p>姓名:<input type="text" value="{{ teacher_info.name }}" name="name" class="form-control"
+                         placeholder="教师姓名..."></p>
+        </div>
+
+        <div class="wrap" style="margin: 0px 0;width: 350px;">
+
+            <div class="left" style="margin: 10px 0;width: 180px">
+                <p>
+                    <select id="leftSelectId" multiple class="form-control" size="5" name="class_id">
+                        {% for iteam in class_list %}
+                            {% if iteam.id in class_id_list %}
+                                <option value="{{ iteam.id }}" selected>{{ iteam.title }}</option>
+                            {% else %}
+                                <option value="{{ iteam.id }}">{{ iteam.title }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </p>
+            </div>
+
+            <div class="center-block" style="margin-right: 0px;margin-left: 0px;margin-top: 30px">
+                <div style="margin-top: 0px">
+                    <a id="btnRight" class="btn btn-success">右移</a>
+                </div>
+
+                <div style="margin-top: 20px">
+                    <a id="btnLeft" class="btn btn-success">左移</a>
+                </div>
+            </div>
+
+            <div class="right" style="margin: 10px 0;width: 180px">
+                <p>
+                    <select id="rightSelectId" multiple class="form-control" size="5" name="right_class_id">
+
+                    </select>
+                </p>
+            </div>
+        </div>
+        <div style="margin: 10px 0;width: 248px">
+            <input type="submit" value="Submit" class="btn btn-success" id="btnSubmit">
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+    $(function () {
+        btnRightFunc();
+        btnLeftFunc();
+        btnSubmitFunc();
+
+
+    });
+
+    function btnRightFunc() {
+        $('#btnRight').click(function () {
+
+            var select_class_id_list = $('#leftSelectId').val();
+
+            $.ajax({
+                url: '/rightToleft/',
+                type: 'POST',
+                data: {'select_class_id_list': select_class_id_list},
+                dataType: 'JSON',
+                traditional: true,
+
+                success: function (arg) {
+
+                    $.each(arg, function (i, row) {
+
+                        var tag = document.createElement('option');
+                        tag.innerHTML = row.title;
+                        tag.setAttribute('value', row.id);
+                        $('#rightSelectId').append(tag);
+
+                        var x = document.getElementById("leftSelectId");
+                        x.remove(x.selectedIndex);
+
+                    });
+
+                }
+            });
+        })
+    }
+
+    function btnLeftFunc() {
+        $('#btnLeft').click(function () {
+
+            var select_class_id_list = $('#rightSelectId').val();
+            $.ajax({
+                url: '/leftToright/',
+                type: 'POST',
+                data: {'select_class_id_list': select_class_id_list},
+                dataType: 'JSON',
+                traditional: true,
+                success: function (arg) {
+                    $.each(arg, function (i, row) {
+                        var tag = document.createElement('option');
+                        tag.innerHTML = row.title;
+                        tag.setAttribute('value', row.id);
+                        $('#leftSelectId').append(tag);
+                        var x = document.getElementById("rightSelectId");
+                        x.remove(x.selectedIndex);
+                    });
+
+                }
+            });
+
+        })
+    }
+
+    function btnSubmitFunc() {
+
+        $('#btnSubmit').click(function () {
+            var arry = new Array();
+
+            $('#rightSelectId').each(function () {
+                cc = $(this).find('option').attr('value');
+                arry.push(cc);
+                console.log(arry);
+
+
+            })
+
+
+        })
+
+    }
+
+
+</script>
+{% endblock %}
+
+
+
+

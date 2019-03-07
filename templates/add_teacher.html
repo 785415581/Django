@@ -1,0 +1,48 @@
+
+
+{% extends 'layout.html' %}
+{% block tabel %}
+
+    <div>
+        <h1>添加教师</h1>
+        <div style="margin: 10px 0">
+            <form method="POST" action="/add_teacher/">
+                <div style="margin: 10px 0">
+                    <P>教师姓名：<input type="text" name="name" class="form-control" placeholder="请输入教师姓名..."/></P>
+                </div>
+                <div style="margin: 10px 0">
+                    <p>
+                        所属班级
+                        <select id="class_list" name="class_ids" class="form-control" multiple size="5">
+                            {% for row in class_list %}
+                                <option value="{{ row.id }}">{{ row.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <div style="margin: 10px 0">
+            <input type="submit" value="提交" class="btn btn-success">
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

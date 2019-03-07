@@ -1,0 +1,100 @@
+body{
+    margin: 0 ;
+}
+
+.left{
+    float: left;
+}
+
+.right{
+    float: right;
+}
+
+.hide{
+    display: none;
+}
+
+.pg-header{
+    height: 48px;
+    min-width: 1190px;
+    background-color: #8a8a8a;
+    line-height: 48px;
+
+}
+
+.menus{
+
+    width: 200px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 48px;
+    background-color: #1c95a4;
+    border-right:1px solid #dddddd;
+
+}
+
+.content{
+    float: left;
+    position: absolute;
+    left: 200px;
+    right: 0;
+    top: 48px;
+    bottom: 0;
+    min-width: 990px;
+    background-color: white;
+    overflow: scroll;
+    z-index: 99;
+}
+
+.pg-header .rmenus a{
+    display: inline-block;
+    padding: 0 15px;
+    color: white;
+    background-color: #8a8a8a;
+}
+
+.pg-header .avatar{
+    padding: 0 20px;
+}
+
+.pg-header .avatar .user-info{
+    display: none;
+    position: absolute;
+    width: 200px;
+    top: 48px;
+    right: 2px;
+    border: 1px solid #dddddd;
+
+    background-color: white;
+    color: white;
+    z-index: 100;
+
+}
+.pg-header .avatar .user-info a{
+    display: block;
+}
+
+.pg-header .avatar:hover .user-info{
+    display: block;
+}
+
+.pg-header .avatar img{
+    border-radius: 50%;
+}
+
+.pg-header .logo{
+   color: white;
+    font-size: 18px;
+    width: 200px;
+    text-align: center;
+    border-right: white;
+}
+
+.pg-body .menus a{
+    display: block;
+    padding: 10px 5px;
+    border: 1px solid #ffffff;
+    color: white;
+
+}

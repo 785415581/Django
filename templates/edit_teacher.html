@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+
+
+{% endblock %}
+
+
+{% block tabel %}
+    <div style="width: 300px;margin: 0 auto;margin-top: 100px">
+        <h1>教师姓名</h1>
+        <div>
+            <form method="POST" action="/edit_teacher/?nid={{ teacher_info.id }}">
+                <div style="margin: 10px 0;width: 248px;">
+                    <p>姓名:<input type="text" value="{{ teacher_info.name }}" name="name" class="form-control" placeholder="教师姓名..."></p>
+                </div>
+
+                <div style="margin: 10px 0;width: 248px">
+                    <p>
+                        <select multiple class="form-control" size="5" name="class_id">
+                            {% for iteam in class_list %}
+                                {% if iteam.id in class_id_list %}
+                                    <option value="{{ iteam.id }}" selected>{{ iteam.title }}</option>
+                                {% else %}
+                                    <option value="{{ iteam.id }}">{{ iteam.title }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </p>
+                </div>
+
+                <div style="margin: 10px 0;width: 248px">
+                    <input type="submit" value="Submit" class="btn btn-success">
+                </div>
+
+            </form>
+        </div>
+
+
+    </div>
+
+{% endblock %}
+
+
+
+
+{% block js %}
+
+{% endblock %}
+
+

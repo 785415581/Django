@@ -1,0 +1,230 @@
+{% extends "layout.html" %}
+
+{% block css %}
+
+    <style>
+        .hide{
+            display: none;
+        }
+        .shadow{
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: black;
+            opacity: 0.4;
+            z-index: 999;
+
+        }
+        .add_modal{
+            z-index: 1000;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            height: 300px;
+            width: 400px;
+            background-color: white;
+            margin-left: -200px;
+            margin-top: -150px;
+        }
+        .edit_modal{
+            z-index: 1000;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            height: 300px;
+            width: 400px;
+            background-color: white;
+            margin-left: -200px;
+            margin-top: -150px;
+        }
+
+    </style>
+
+{% endblock %}
+
+
+
+{% block tabel %}
+
+    <div>
+        <h1>班级列表</h1>
+        <div style="margin: 10px 0">
+            <a href="/add_class/" class="btn btn-primary">添加</a>
+            <a onclick="showModal();" class="btn btn-success">对话框添加</a>
+        </div>
+
+        <div style="margin: 10px 0">
+            <table class="table table-bordered table-hover">
+            <tr class="active">
+                <td>Id</td>
+                <td>Name</td>
+                <td>Action</td>
+            </tr>
+
+            {% for foo in class_list %}
+                <tr class="active">
+                    <td>{{ foo.id }}</td>
+                    <td>{{ foo.title }}</td>
+                    <td>
+                        <a href="/edit_class/?nid={{ foo.id }}" class="glyphicon glyphicon-pencil">编辑</a>
+                        |
+                        <a class="fa fa-desktop" onclick="modalEdit(this);">对话框编辑</a>
+                        |
+                        <a href="/del_class/?nid={{ foo.id }}" onclick="AjaxDelete();" class="glyphicon glyphicon-trash">删除</a>
+                        |
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
+
+    </div>
+        {# 此处为添加模态对话框 #}
+    <div id="shadow" class="shadow hide"></div>   {#空格后面家hide意思是默认隐藏#}
+    <div id="add_modal" class="add_modal hide">
+    <p>
+        <input id="title" type="text" name="title" />
+    </p>
+    <input type="button" value="提交" onclick="AjaxSend();" /><span id="errormsg"></span>
+    <input type="button" value="取消" onclick="cancelSend();" />
+
+    </div>
+
+
+    {# 此处为对话编辑模态对话框 #}
+    <div id="shadow" class="shadow hide"></div>   {#空格后面家hide意思是默认隐藏#}
+    <div id="modelEdit" class="edit_modal hide">
+    <p>
+        <input id="editTitle" type="text" name="title" />
+        <input id="editId" type="text" name="id" style="display: none" />
+    </p>
+    <input type="button" value="修改" onclick="EditAjaxEdit();" /><span id="errormsg"></span>
+    <input type="button" value="取消" onclick="cancelSend();" />
+
+    </div>
+
+{% endblock %}
+
+
+
+
+{% block js %}
+
+    <script>
+        function showModal() {
+            document.getElementById("shadow").classList.remove('hide');   {# 把隐藏的ID为shadow的hide去掉 #}
+            document.getElementById("add_modal").classList.remove('hide');
+        }
+
+        function cancelSend() {
+            document.getElementById("shadow").classList.add('hide');   {# 把隐藏的ID为shadow的hide添加 #}
+            document.getElementById("add_modal").classList.add('hide');
+            document.getElementById("modelEdit").classList.add('hide');
+        }
+
+        function modalEdit(ths) {
+
+            document.getElementById("shadow").classList.remove('hide');   {# 把隐藏的ID为shadow的hide去掉 #}
+            document.getElementById("modelEdit").classList.remove('hide');
+            /*
+            1.获取当前点击标签
+            2.获取当前标签的父标签，再找其上级
+            3.获取当前班级名称，赋值到编辑对话框中
+            */
+            var row = $(ths).parent().prevAll();
+            {#console.log($(row[1]).text());#}
+            var content = $(row[0]).text();
+            $('#editTitle').val(content);
+
+            var contentId = $(row[1]).text();
+            $('#editId').val(contentId);
+        }
+
+        function EditAjaxEdit() {
+
+
+            var nid = $('#editId').val();
+            var content = $('#editTitle').val();
+
+            $.ajax({
+
+                url:'/edit_modal_class/',
+                type:'POST',
+                data:{'nid':nid,'content':content},
+                success:function (arg) {
+                    //arg字符串类型
+                    //JSON.parse(字符串) =>对象
+                    //JSON.stringify(对象) =>字符串
+                    arg = JSON.parse(arg);
+                    console.log(arg);
+                    if (arg.status){
+                        //location.href = '/classes/'
+                        location.reload();
+                    }else{
+                        alert(arg.message);
+                    }
+
+                }
+
+            })
+
+        }
+
+
+        function AjaxDelete() {
+            $.ajax({
+                url: '/classes/',
+                type: 'POST',
+                data: {},
+
+                success: function () {
+                    console.log("success");
+                    location.href = "/classes/";
+
+                }
+            });
+        }
+
+
+        function AjaxSend() {                    {# 不用form表单提交数据    改用Ajax提交，Ajax的提交方式和form类似，其中的method就与type类似 ，value 和data类似#}
+            $.ajax({
+                url: '/modal_add_class/',
+                type: 'POST',
+                data: {"title": $('#title').val()},
+
+                {# 下面是里一个函数 #}
+                error: function () {
+                    console.log("erro")
+                },
+                success: function (data) {
+                    //当服务处理完之后，返回数据时，该函数自动调用
+                    //data=服务端返回的值
+
+                    console.log("success");
+                    if (data == 'ok') {
+                        {#location.href="/classes/";#}
+                        location.href = "/classes/";
+                        {#alert('添加成功');#}
+                    }
+                    else {
+                        $('#errormsg').text(data)
+                    }
+                }
+            });
+        }
+
+    </script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

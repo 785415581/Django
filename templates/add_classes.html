@@ -1,0 +1,26 @@
+
+
+{% extends 'layout.html' %}
+
+
+{% block tabel %}
+
+<div>
+            <h1>添加班级</h1>
+            <div style="margin: 30px 0">
+                <form method="POST">
+                    <div style="margin: 10px 0">
+                        <label class="label label-default">班级名称</label>
+                    </div>
+                    <div style="margin: 10px 0">
+                        <input type="text" name="title" class="form-control" placeholder="请输入班级名称..."/>
+                    </div>
+                    <div style="margin: 10px 0">
+                        <input type="submit" value="提交" class="btn btn-default"><p>{{ msg }}</p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+
+{% block tabel %}
+
+
+    <div>
+        <h1>添加学生</h1>
+        <div>
+            <form method="POST" action="/add_student/">
+            <div style="margin: 10px 0;width: 248px;">
+                <p>学生姓名：<input type="text" name="name" class="form-control" placeholder="学生姓名..."></p>
+            </div>
+            <div style="margin: 10px 0;width: 248px">
+                <p>
+                    所属班级：
+                    <select name="class_id" class="form-control">
+                        {% for foo in class_list %}
+                            <option value="{{ foo.id }}">{{ foo.title }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+            </div>
+
+            <div style="margin: 10px 0">
+                <input class="btn btn-success" type="submit" value="提交">{{ msg }}
+            </div>
+
+        </form>
+        </div>
+
+    </div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

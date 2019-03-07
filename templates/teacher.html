@@ -1,0 +1,246 @@
+
+{% extends 'layout.html' %}
+
+
+{% block css %}
+
+    <style>
+        .hide {
+            display: none;
+        }
+
+        .shadow {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: black;
+            opacity: 0.4;
+            z-index: 999;
+
+        }
+
+        .add_modal {
+            z-index: 1000;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            height: 300px;
+            width: 400px;
+            background-color: white;
+            margin-left: -200px;
+            margin-top: -150px;
+        }
+
+        .loading {
+            position: fixed;
+            width: 320px;
+            height: 240px;
+            left: 50%;
+            top: 50%;
+            margin-left: -160px;
+            margin-top: -120px;
+            background-image: url("/static/images/loading1.gif");
+
+        }
+
+        .edit_modal {
+            z-index: 1000;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            height: 300px;
+            width: 400px;
+            background-color: white;
+            margin-left: -200px;
+            margin-top: -150px;
+        }
+
+    </style>
+
+{% endblock %}
+
+
+{% block tabel %}
+    <div>
+        <h1>教师列表</h1>
+        <div style="margin: 10px 0">
+            <a href="/add_teacher/" class="btn btn-primary">添加</a>
+            <a id="btnAdd" class="btn btn-success">对话框添加</a>
+        </div>
+
+        <div style="margin: 10px 0">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <td>ID</td>
+                    <td>教师姓名</td>
+                    <td>任教班级</td>
+                    <td>操作</td>
+                </tr>
+                {% for foo in teacher_list %}
+                    <tr>
+                        <td>{{ foo.tid }}</td>
+                        <td>{{ foo.name }}</td>
+                        <td>
+                            {% for item in foo.titles %}
+                                <span class="label label-success">{{ item }}</span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a href="/edit_teacher/?nid={{ foo.tid }}" class="glyphicon glyphicon-pencil">编辑</a>
+                            |
+                            <a href="/transfrom_edit_teacher/?nid={{ foo.tid }}" class="glyphicon glyphicon-pencil">移动编辑</a>
+                            |
+                            <a href="/del_teacher/?nid={{ foo.tid }}" class="glyphicon glyphicon-trash">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    {# 此处为添加模态对话框 #}
+    <div id="shadow" class="shadow hide"></div>
+    {#空格后面家hide意思是默认隐藏#}
+    <div id="loading" class="loading hide"></div>
+
+    <div id="add_modal" class="add_modal hide">
+    <p>
+        老师姓名：<input type="text" id="addName">
+    </p>
+    <p>
+        <select id="classIds" multiple size="10">
+
+        </select>
+    </p>
+    <a id="addSubmit">提交</a>
+</div>
+
+{% endblock %}
+
+
+
+{% block js %}
+
+<script>
+
+    $(function () {
+        bindAdd();
+        bindAddSubmit();
+    });
+
+    function bindAdd() {
+        $('#btnAdd').click(function () {
+            $('#shadow,#loading').removeClass('hide');
+            /*
+            发送ajax请求，获取所有班级信息
+            再classIds下拉框中生成option
+             */
+
+            $.ajax({
+                url: '/get_all_class/',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function (arg) {
+                    console.log(arg);
+                    //将所哟有的数据添加到select，option
+
+                    $.each(arg, function (i, row) {
+                        var tag = document.createElement('option');
+                        tag.innerHTML = row.title;
+                        tag.setAttribute('value', row.id);
+                        $('#classIds').append(tag);
+                    });
+                    $('#loading').addClass('hide');
+                    $('#add_modal').removeClass('hide')
+
+
+                }
+            })
+
+        })
+    }
+
+    function bindAddSubmit() {
+
+        $('#addSubmit').click(function () {
+
+            var name = $('#addName').val();
+            var class_id_list = $('#classIds').val();
+            console.log(name, class_id_list);
+            $.ajax({
+                url: '/modal_add_teacher/',
+                type: 'POST',
+                data: {'name': name, 'class_id_list': class_id_list},
+                traditional: true, //如果提交的数据的值有列表，则需要添加此属性
+
+                success: function (arg) {
+                    console.log(name);
+                    if (arg) {
+                        location.reload();
+                    } else {
+                        alert('错误信息');
+                    }
+
+                }
+
+            })
+        })
+
+
+    }
+
+</script>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
